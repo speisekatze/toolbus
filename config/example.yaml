@@ -1,0 +1,9 @@
+toolbus:
+  server:
+    port: 8080
+    proto: http
+    host: 10.0.10.102
+    cert: 
+    key: ''
+  cluster:
+    prefix: 'c1'

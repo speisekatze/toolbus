@@ -1,0 +1,9 @@
+import uuid
+import platform
+import requests
+
+mac = '%012x' % uuid.getnode()
+hostname = platform.node()
+
+url = f'{proto}://{host}:{port}/{stage}?mac={{mac}}&host={{hostname}}'
+r = requests.get(url)
