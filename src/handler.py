@@ -59,7 +59,7 @@ class HttpRequest(http.server.BaseHTTPRequestHandler):
         handler_result = self.process_request(path)
         if handler_result == REQOK:
             self.send_response(200)
-            self.send_header("Content-type", "text/text; charset=%s" % "UTF-8")
+            self.send_header("Content-type", "application/json; charset=%s" % "UTF-8")
             date = self.date_time_string(
                 datetime.datetime.timestamp(datetime.datetime.now())
             )
@@ -94,13 +94,15 @@ class HttpRequest(http.server.BaseHTTPRequestHandler):
             param = ''
             if len(msg) > 1:
                 param = msg[1]
+            if msg[0] == '/':
+                msg[0] = '/init'
             module = 'src.paths' + msg[0].replace('/','.')
             mod = import_module(module)
             self.result = mod.execute(param)
             print(msg)
             return REQOK
         except Exception as error:
-            self.log_message("Error '{0}' occured.", (error))
+            self.log_message(f"Error '{error}' occured.")
             return REQINV
         else:
             self.log_message("should not get here")

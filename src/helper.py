@@ -1,5 +1,7 @@
 import os.path
-import sqlite3
+import json
+import src.config as toolbus
+import src.db as db
 
 def get_script(name):
     filename = f'scripts/{name}.toolbus'
@@ -9,41 +11,24 @@ def get_script(name):
         lines = f.readlines()
     return "\n".join(lines)
 
-def get_group(name):
-    con = sqlite3.connect('inventory/hosts.sqlite')
-    cur = con.cursor()
-    r = cur.execute(f"SELECT * FROM groups WHERE name = '{name}'")
-    group_info = r.fetchone()
-    con.close()
-    return group_info
+def readfile(name):
+    filename = f'scripts/{name}'
+    if not os.path.isfile(filename):
+        return ''
+    with open(filename, 'r') as f:
+        lines = f.readlines()
+    return "\n".join(lines)
 
-def get_host(uid):
-    con = sqlite3.connect('inventory/hosts.sqlite')
-    cur = con.cursor()
-    r = cur.execute(f"SELECT * FROM hosts WHERE uid = '{uid}'")
-    host_info = r.fetchone()
-    con.close()
-    return host_info
+def new_stage_link(newstage):
+    proto = toolbus.server['proto']
+    port = toolbus.server['port']
+    host = toolbus.server['host']
+    return f'{proto}://{host}:{port}/{newstage}?mac={{mac}}&host={{hostname}}'
 
-def get_next_stage(stage):
-    stage += 1
-    con = sqlite3.connect('inventory/hosts.sqlite')
-    cur = con.cursor()
-    r = cur.execute(f"SELECT * FROM flow WHERE sort = {stage}")
-    flow_info = r.fetchone()
-    con.close()
-    return flow_info
-
-def update_group(id, serial):
-    con = sqlite3.connect('inventory/hosts.sqlite')
-    cur = con.cursor()
-    cur.execute(f"UPDATE groups SET serial = {serial} WHERE id = {id}")
-    con.commit()
-    con.close()
-
-def new_host(host):
-    con = sqlite3.connect('inventory/hosts.sqlite')
-    cur = con.cursor()
-    cur.execute(f"INSERT INTO hosts(uid, group, ip, hostname, stage) VALUES('{host['uid']}', {host['group']}, '{host['ip']}', '{host['hostname']}', {host['stage']} )")
-    con.commit()
-    con.close()
+def prepare_result(host, payload=''):
+    newstage = db.get_next_stage(host['stage'])
+    host['stage'] = newstage[2]
+    data = {}
+    data['url'] = new_stage_link(newstage[1])
+    data['payload'] = ''
+    return json.dumps(data)

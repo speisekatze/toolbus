@@ -7,3 +7,12 @@ hostname = platform.node()
 
 url = f'{proto}://{host}:{port}/{stage}?mac={{mac}}&host={{hostname}}'
 r = requests.get(url)
+data = {{}}
+print(r.status_code)
+if r.status_code == 200:
+    data = r.json()
+
+if 'url' in data:
+    new_url = data['url'].format(mac=mac, hostname=hostname)
+    print(new_url)
+
