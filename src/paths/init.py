@@ -5,7 +5,7 @@ from src.helper import get_script
 
 
 
-def execute(message):
+def execute(_):
     print('loaded init')
     proto = toolbus.server['proto']
     port = toolbus.server['port']
