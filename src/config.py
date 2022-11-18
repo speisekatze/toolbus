@@ -10,3 +10,4 @@ def load_yaml(config_file):
 c = load_yaml("config/config.yaml")
 server = c['toolbus']['server']
 cluster = c['toolbus']['cluster']
+db = c['toolbus']['db']
