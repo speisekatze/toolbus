@@ -1,0 +1,3 @@
+
+class InvalidClusterRole(Exception):
+    pass
