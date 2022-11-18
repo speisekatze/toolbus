@@ -3,6 +3,7 @@ import random
 import src.config as toolbus
 import src.helper as helper
 import src.db as db
+from src.exceptions import InvalidClusterRole
 
 def execute(message):
     print('loaded config')
@@ -14,7 +15,7 @@ def execute(message):
     if host_info['empty'] == True:
         host_info = create_host(param)
     if host_info is None:
-        raise Exception("could not create host. maybe hostname does not contain cluster-role.")
+        raise InvalidClusterRole("could not create host. maybe hostname does not contain cluster-role.")
     return helper.prepare_result(host_info)
 
 

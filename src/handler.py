@@ -9,6 +9,7 @@ import http.server
 import datetime
 import urllib.parse
 from importlib import import_module
+from src.exceptions import InvalidClusterRole
 
 
 __version__ = "0.3"
@@ -25,15 +26,6 @@ def get_help_text():
     help_html += "<h1>Nope</h1>"
     help_html += "</body>"
     return help_html
-
-
-def get_argument(msg, argn=1):
-    if len(msg) > argn:
-        arg = msg[argn].split('=')
-        if arg[0] == 'fmt':
-            if arg[1] == '1':
-                return 1
-    return 0
 
 
 class HttpRequest(http.server.BaseHTTPRequestHandler):
@@ -101,9 +93,9 @@ class HttpRequest(http.server.BaseHTTPRequestHandler):
             self.result = mod.execute(param)
             print(msg)
             return REQOK
-        except Exception as error:
+        except InvalidClusterRole as error:
             self.log_message(f"Error '{error}' occured.")
-            return REQINV
+            return SRCINV
         else:
             self.log_message("should not get here")
             return UNKNOWN
