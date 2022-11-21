@@ -23,7 +23,7 @@ def new_stage_link(newstage):
     proto = toolbus.server['proto']
     port = toolbus.server['port']
     host = toolbus.server['host']
-    return f'{proto}://{host}:{port}/{newstage}?mac={{mac}}&host={{hostname}}'
+    return f'{proto}://{host}:{port}/{newstage}?mac={{mac}}&host={{hostname}}&ifname={{ifname}}'
 
 def prepare_result(host, payload=''):
     newstage = db.get_next_stage(host['stage'])
@@ -32,3 +32,9 @@ def prepare_result(host, payload=''):
     data['url'] = new_stage_link(newstage[1])
     data['payload'] = ''
     return json.dumps(data)
+
+def param_from_message(message):
+    param = {'mac': '', 'host': ''}
+    if len(message) > 1:
+        param = {k:v for (k,v) in [x.split('=') for x in message.split('&')]}
+    return param

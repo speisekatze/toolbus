@@ -7,15 +7,11 @@ from src.exceptions import InvalidClusterRole
 
 def execute(message):
     print('loaded config')
-    param = {'mac': '', 'host': ''}
-    if len(message) > 1:
-        param = {k:v for (k,v) in [x.split('=') for x in message.split('&')]}
+    param = helper.param_from_message(message)
     host_info = db.get_host(param['mac'])
     print(host_info)
     if host_info['empty'] == True:
         host_info = create_host(param)
-    if host_info is None:
-        raise InvalidClusterRole("could not create host. maybe hostname does not contain cluster-role.")
     return helper.prepare_result(host_info)
 
 
@@ -24,7 +20,7 @@ def create_host(param):
     print('new host '+param['mac'])
     group_info = db.get_group(param['host'].replace('cluster', ''))
     if group_info is None:
-        return None
+        raise InvalidClusterRole("could not create host. No Roles matching hostname.")
     serial = int(group_info[3]) + 1  
     db.update_group(group_info[0], serial)
     net_ips = set([str(ip) for ip in ipaddress.IPv4Network(group_info[2])])
