@@ -1,9 +1,17 @@
 import uuid
 import platform
 import requests
+import psutil
 
 mac = '%012x' % uuid.getnode()
 hostname = platform.node()
+addrs = psutil.net_if_addrs()
+ifname = ''
+for i in addrs:
+    for x in addrs[i]:
+        if int(x[0]) == 17 and x[1].replace(':', '') == mac:
+            ifname = i            
+
 
 url = f'{proto}://{host}:{port}/{stage}?mac={{mac}}&host={{hostname}}'
 r = requests.get(url)
@@ -13,6 +21,6 @@ if r.status_code == 200:
     data = r.json()
 
 if 'url' in data:
-    new_url = data['url'].format(mac=mac, hostname=hostname)
+    new_url = data['url'].format(mac=mac, hostname=hostname, ifname=ifname)
     print(new_url)
 
