@@ -1,8 +1,8 @@
 Description='A basic static ethernet connection'
-Interface={ifname}
+Interface={name}
 Connection=ethernet
 IP=static
-Address=('address}')
+Address=('{address}')
 Gateway='{gateway}'
 DNS=({dns})
 
