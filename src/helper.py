@@ -12,12 +12,12 @@ def get_script(name):
     return "\n".join(lines)
 
 def readfile(name):
-    filename = f'scripts/{name}'
+    filename = f'assets/{name}'
     if not os.path.isfile(filename):
         return ''
     with open(filename, 'r') as f:
         lines = f.readlines()
-    return "\n".join(lines)
+    return "".join(lines)
 
 def new_stage_link(newstage):
     proto = toolbus.server['proto']
@@ -30,11 +30,11 @@ def prepare_result(host, payload=''):
     host['stage'] = newstage[2]
     data = {}
     data['url'] = new_stage_link(newstage[1])
-    data['payload'] = ''
+    data['payload'] = payload
     return json.dumps(data)
 
 def param_from_message(message):
-    param = {'mac': '', 'host': ''}
+    param = {'mac': '', 'host': '', 'ifname': ''}
     if len(message) > 1:
         param = {k:v for (k,v) in [x.split('=') for x in message.split('&')]}
     return param
