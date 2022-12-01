@@ -3,6 +3,28 @@ import platform
 import requests
 import psutil
 
+def stage_ip(data):
+    print(data)
+
+def stage_default(data):
+    print(data)
+
+stages = {
+    'ip': {'f': stage_ip}
+}
+
+def get_f(stage):
+    if stage not in stages:
+        return stage_default
+    return stages[stage]['f']
+
+def get(url):
+    r = requests.get(url)
+    data = {}
+    if r.status_code == 200:
+        data = r.json()
+    return data
+
 mac = '%012x' % uuid.getnode()
 hostname = platform.node()
 addrs = psutil.net_if_addrs()
@@ -13,14 +35,14 @@ for i in addrs:
             ifname = i            
 
 
-url = f'{proto}://{host}:{port}/{stage}?mac={{mac}}&host={{hostname}}'
-r = requests.get(url)
-data = {{}}
-print(r.status_code)
-if r.status_code == 200:
-    data = r.json()
+url = f'%%proto%%://%%host%%:%%port%%/%%stage%%?mac={mac}&host={hostname}'
+data = get(url)
+
 
 if 'url' in data:
     new_url = data['url'].format(mac=mac, hostname=hostname, ifname=ifname)
     print(new_url)
+    data = get(new_url)
+    whatever = get_f(data['stage'])(data)
+    
 
