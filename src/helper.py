@@ -25,7 +25,7 @@ def get_stage_link(newstage):
     host = toolbus.server['host']
     return f'{proto}://{host}:{port}/{newstage}?mac={{mac}}&host={{hostname}}&ifname={{ifname}}'
 
-def prepare_result(host, stage=None, payload=''):
+def prepare_result(host, stage=None, payload='', options=''):
     if stage is None:
         # we came from bootstrap
         stage = host['stage']
@@ -35,6 +35,7 @@ def prepare_result(host, stage=None, payload=''):
     data['url'] = get_stage_link(stage_info[1])
     data['payload'] = payload
     data['stage'] = oldstage_info[1]
+    data['options'] = options
     
     return json.dumps(data)
 
