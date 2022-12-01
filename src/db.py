@@ -26,6 +26,14 @@ def get_host(uid):
         host['empty'] = False
     return host
 
+def get_stage(stage):
+    con = sqlite3.connect(toolbus.db['filename'])
+    cur = con.cursor()
+    r = cur.execute(f"SELECT * FROM flow WHERE sort = {stage}")
+    flow_info = r.fetchone()
+    con.close()
+    return flow_info
+
 def get_next_stage(stage):
     stage += 1
     con = sqlite3.connect(toolbus.db['filename'])
