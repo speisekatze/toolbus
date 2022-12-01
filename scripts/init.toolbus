@@ -2,9 +2,16 @@ import uuid
 import platform
 import requests
 import psutil
+import subprocess
 
 def stage_ip(data):
     print(data)
+    profile_name = data['options']['netctl_profile']
+    filename = '/etc/netctl/' + profile_name
+    f = open(filename, 'w')
+    f.write(data['payload'])
+    f.close()
+    subprocess.run(['netctl', 'switch-to', profile_name])
 
 def stage_default(data):
     print(data)
