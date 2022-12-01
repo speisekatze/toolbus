@@ -27,7 +27,7 @@ def create_host(param):
     used_ips = set(db.get_ips_from_group(group_info[0]))
     usable_ips = list(net_ips - used_ips)
     host['ip'] = random.choice(usable_ips)
-    host['stage'] = 0
+    host['stage'] = 1
     host['uid'] = param['mac']
     host['hostname'] = toolbus.cluster['prefix'] + group_info[1] + '{:02}'.format(serial)
     host['group'] = group_info[0]
