@@ -10,4 +10,9 @@ def execute(_):
     proto = toolbus.server['proto']
     port = toolbus.server['port']
     host = toolbus.server['host']
-    return get_script('init').format(proto=proto, port=port, host=host, stage='config')
+    script = get_script('init')
+    script = script.replace('%%proto%%', str(proto))
+    script = script.replace('%%port%%', str(port))
+    script = script.replace('%%host%%', str(host))
+    script = script.replace('%%stage%%', 'bootstrap')
+    return script

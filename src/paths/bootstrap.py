@@ -6,7 +6,7 @@ import src.db as db
 from src.exceptions import InvalidClusterRole
 
 def execute(message):
-    print('loaded config')
+    print('loaded bootstrap')
     param = helper.param_from_message(message)
     host_info = db.get_host(param['mac'])
     print(host_info)
