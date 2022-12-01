@@ -19,18 +19,23 @@ def readfile(name):
         lines = f.readlines()
     return "".join(lines)
 
-def new_stage_link(newstage):
+def get_stage_link(newstage):
     proto = toolbus.server['proto']
     port = toolbus.server['port']
     host = toolbus.server['host']
     return f'{proto}://{host}:{port}/{newstage}?mac={{mac}}&host={{hostname}}&ifname={{ifname}}'
 
-def prepare_result(host, payload=''):
-    newstage = db.get_next_stage(host['stage'])
-    host['stage'] = newstage[2]
+def prepare_result(host, stage=None, payload=''):
+    if stage is None:
+        # we came from bootstrap
+        stage = host['stage']
+    stage_info = db.get_stage(stage)
+    oldstage_info = db.get_stage(host['stage'])
     data = {}
-    data['url'] = new_stage_link(newstage[1])
+    data['url'] = get_stage_link(stage_info[1])
     data['payload'] = payload
+    data['stage'] = oldstage_info[1]
+    
     return json.dumps(data)
 
 def param_from_message(message):

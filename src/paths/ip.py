@@ -13,7 +13,7 @@ def execute(message):
         raise NonExistantHost('wrong stage for non-existing Host.')
     profile = prepare_template('netctl.profile', param['ifname'], host_info['ip'])
     db.update_stage(host_info)
-    return helper.prepare_result(host_info, payload=profile)
+    return helper.prepare_result(host_info, 2, payload=profile)
 
 def prepare_template(filename, ifname, ip):
     data = {}
