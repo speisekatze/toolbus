@@ -2,6 +2,7 @@ import os.path
 import json
 import src.config as toolbus
 import src.db as db
+from src.exceptions import NonExistantHost
 
 def get_script(name):
     filename = f'scripts/{name}.toolbus'
@@ -44,3 +45,12 @@ def param_from_message(message):
     if len(message) > 1:
         param = {k:v for (k,v) in [x.split('=') for x in message.split('&')]}
     return param
+
+def prepare_request(message):
+    param = helper.param_from_message(message)
+    print(param)
+    host_info = db.get_host(param['mac'])
+    print(host_info)
+    if host_info['empty'] == True:
+        raise NonExistantHost('wrong stage for non-existing Host.')
+    return host_info
