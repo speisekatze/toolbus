@@ -5,7 +5,7 @@ import src.db as db
 
 def execute(message):
     print('loaded Hostname')
-    host_info = prepare_request(message)
+    host_info = helper.prepare_request(message)
     host_info['stage'] = 2
     db.update_stage(host_info)
     options = {'hostname': host_info['hostname']}

@@ -47,7 +47,7 @@ def param_from_message(message):
     return param
 
 def prepare_request(message):
-    param = helper.param_from_message(message)
+    param = param_from_message(message)
     print(param)
     host_info = db.get_host(param['mac'])
     print(host_info)
