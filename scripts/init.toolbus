@@ -13,7 +13,7 @@ def call(command, sleep_time=0):
     return r
 
 def callc(command, sleep_time=0):
-    p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+    p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     r = p.wait()
     time.sleep(sleep_time)
     return p.communicate()
@@ -27,6 +27,9 @@ def change_pw(user, passw):
     l = p.communicate()
     return p.wait()
 
+def get_home_dir(user):
+    return callc(['getent', 'passwd', user])[0].decode('ascii').split(':')[5]
+
 def stage_ip(data):
     profile_name = data['options']['netctl_profile']
     filename = '/etc/netctl/' + profile_name
@@ -36,14 +39,9 @@ def stage_ip(data):
     call(['netctl', 'switch-to', profile_name], 5)
     call(['netctl', 'store'])
 
-
 def stage_hostname(data):
     hostname = data['options']['hostname']
     call(['hostnamectl', 'set-hostname', hostname], 5)
-
-def get_home_dir(user):
-    return callc(['getent', 'passwd', user])[0].decode('ascii').split(':')[5]
-
 
 def stage_ssh(data):
     users = data['payload']
@@ -61,6 +59,13 @@ def stage_ssh(data):
         f.write(u['sshpub'])
         f.close()
     #print(users)
+
+def stage_rke(data):
+    c = ['docker', 'run'] + data['payload'].split(' ')
+    
+    print(c)
+    x = callc(c, 5)
+    print(x)
     exit()
 
 def stage_default(data):
@@ -69,7 +74,8 @@ def stage_default(data):
 stages = {
     'ip': {'f': stage_ip},
     'hostname': {'f': stage_hostname},
-    'ssh': {'f': stage_ssh}
+    'ssh': {'f': stage_ssh},
+    'rke': {'f': stage_rke}
 }
 
 def get_f(stage):
@@ -96,7 +102,6 @@ for i in addrs:
 
 url = f'%%proto%%://%%host%%:%%port%%/%%stage%%?mac={mac}&host={hostname}'
 data = get(url)
-
 
 while 'url' in data:
     new_url = data['url'].format(mac=mac, hostname=hostname, ifname=ifname)
