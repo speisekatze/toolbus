@@ -2,10 +2,14 @@ import sqlite3
 import src.config as toolbus
 
 
-def get_group(name):
+def get_group(name='',id=0):
     con = sqlite3.connect(toolbus.db['filename'])
     cur = con.cursor()
-    r = cur.execute(f"SELECT * FROM groups WHERE name = '{name}'")
+    r = None
+    if name != '':
+        r = cur.execute(f"SELECT * FROM groups WHERE name = '{name}'")
+    if id != 0:
+        r = cur.execute(f"SELECT * FROM groups WHERE id = '{id}'")
     group_info = r.fetchone()
     con.close()
     return group_info
