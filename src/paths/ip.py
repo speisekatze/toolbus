@@ -5,7 +5,8 @@ import src.db as db
 def execute(message):
     print('loaded IP')
     host_info = helper.prepare_request(message)
-    profile = helper.prepare_template('netctl.profile', param['ifname'], host_info['ip'])
+    param = helper.param_from_message(message)
+    profile = prepare_template('netctl.profile', param['ifname'], host_info['ip'])
     db.update_stage(host_info)
     options = {}
     options['netctl_profile'] = toolbus.cluster['prefix'] + 'internal'
