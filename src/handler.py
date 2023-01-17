@@ -91,7 +91,6 @@ class HttpRequest(http.server.BaseHTTPRequestHandler):
             module = 'src.paths' + msg[0].replace('/','.')
             mod = import_module(module)
             self.result = mod.execute(param)
-            print(msg)
             return REQOK
         except InvalidClusterRole as error:
             self.log_message(f"Error '{error}' occured.")

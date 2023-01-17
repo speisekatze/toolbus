@@ -37,7 +37,7 @@ def prepare_result(host, stage=None, payload='', options=''):
     data['payload'] = payload
     data['stage'] = oldstage_info[1]
     data['options'] = options
-    
+    print(data)
     return json.dumps(data)
 
 def param_from_message(message):
@@ -50,7 +50,6 @@ def prepare_request(message):
     param = param_from_message(message)
     print(param)
     host_info = db.get_host(param['mac'])
-    print(host_info)
     if host_info['empty'] == True:
         raise NonExistantHost('wrong stage for non-existing Host.')
     return host_info
