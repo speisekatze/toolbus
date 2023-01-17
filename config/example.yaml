@@ -7,3 +7,20 @@ toolbus:
     key: ''
   cluster:
     prefix: 'c1'
+    gateway: '10.0.0.1'
+    cidr: '8'
+    dns: 
+      - 10.0.0.1
+    users:
+      - 
+        name: root
+        passwd: 
+        sshpub: ssh-rsa 
+      - 
+        name: speisekater
+        passwd: 
+        sshpub: ssh-rsa 
+    rke:
+      worker: -d --privileged --restart=unless-stopped --net=host -v /etc/kubernetes:/etc/kubernetes -v /var/run:/var/run rancher/rancher-agent:v2.6.9 --server https://10.100.10.11 --token <> --ca-checksum <> --worker
+      etcd: -d --privileged --restart=unless-stopped --net=host -v /etc/kubernetes:/etc/kubernetes -v /var/run:/var/run rancher/rancher-agent:v2.6.9 --server https://10.100.10.11 --token <> --ca-checksum <> --etcd
+      control: -d --privileged --restart=unless-stopped --net=host -v /etc/kubernetes:/etc/kubernetes -v /var/run:/var/run rancher/rancher-agent:v2.6.9 --server https://10.100.10.11 --token <> --ca-checksum <> --controlplane
