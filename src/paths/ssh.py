@@ -8,5 +8,5 @@ def execute(message):
     host_info = helper.prepare_request(message)
     host_info['stage'] = 3
     db.update_stage(host_info)
-    return helper.prepare_result(host_info, 3, payload=toolbus.cluster['users'], options={})
+    return helper.prepare_result(host_info, 4, payload=toolbus.cluster['users'], options={})
 
